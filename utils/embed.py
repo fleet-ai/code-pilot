@@ -48,7 +48,6 @@ def embed_code_chunks(chunks, model="text-embedding-ada-002", token_limit=8191):
     current_batch = []
     current_batch_tokens = 0
     encoding = tiktoken.encoding_for_model(model)
-    print("chunks:", chunks)
     for chunk in chunks:
         next_batch_tokens = len(
             encoding.encode(
