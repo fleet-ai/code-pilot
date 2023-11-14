@@ -35,12 +35,12 @@ EMBEDDINGS_MODEL = "text-embedding-ada-002"
 MAX_CONTEXT_LENGTH_EMBEDDINGS = 8191
 
 # Pinecone constants
-LIBRARY_NAME = "pydantic"
-INDEX_NAME = "libraries"
-INDEX_ENVIRONMENT = "us-east-1-aws"
-NAMESPACE = "pydantic-src-test"
+LIBRARY_NAME = ""  # TODO add
+INDEX_NAME = ""  # TODO add
+INDEX_ENVIRONMENT = ""  # TODO add
+NAMESPACE = ""  # TODO add
 
 # Auth constants
-APP_ID = "463266"
-BOT_NAME = "issues-responder"
-PRIVATE_KEY_PATH = "issues-responder.2023-11-13.private-key.pem"
+APP_ID = ""  # TODO add
+BOT_NAME = "issues-responder"  # TODO add
+PRIVATE_KEY_PATH = "<your key>.pem"  # TODO add

@@ -44,6 +44,7 @@ async def embed_issues(issues):
         )
         for chunk, embedding in zip(chunks, embeddings):
             metadata = {
+                "type": "issue",
                 "issue_id": issue["id"],
                 "url": issue["html_url"],
                 "title": issue["title"],

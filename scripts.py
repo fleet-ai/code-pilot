@@ -1,4 +1,5 @@
 import os
+import argparse
 from dotenv import load_dotenv
 
 import pinecone
@@ -26,7 +27,7 @@ def read_and_upsert(library_name):
             "id": row["id"],
             "values": [float(value) for value in row["dense_embeddings"]],
             "sparse_values": dict(row["sparse_values"]),
-            "metadata": dict(row["metadata"]),
+            "metadata": {**dict(row["metadata"]), "type": "documentation"},
         }
 
     df["dict"] = df.apply(convert_row_to_dict, axis=1)
@@ -40,5 +41,21 @@ def read_and_upsert(library_name):
     print("Finished upserting")
 
 
-if __name__ == "__main__":
+def read_and_upsert_source_code():
+    pass
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--code", action="store_true", help="Scrape and upsert source code"
+    )
+    args = parser.parse_args()
+
+    if args.source_code:
+        read_and_upsert_source_code()
     read_and_upsert(LIBRARY_NAME)
+
+
+if __name__ == "__main__":
+    main()
