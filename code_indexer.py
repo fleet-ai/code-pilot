@@ -59,7 +59,9 @@ class CodeIndexer:
             {
                 "id": str(uuid.uuid4()),
                 "text": chunk,
-                "file": file,
+                "file": file.split("/src_code/", 1)[1]
+                if "/src_code/" in file
+                else file,
             }
             for chunk in chunks
         ]
@@ -138,6 +140,7 @@ class CodeIndexer:
                     "id": chunk["id"],
                     "text": chunk["text"],
                     "file": chunk["file"],
+                    "type": "code",
                 }
                 vectors.append(
                     {
