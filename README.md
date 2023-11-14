@@ -125,22 +125,42 @@ Go to `constants.py` and update the following constants:
 
 ### 4. Run and upsert your embeddings
 
+#### Embedding documentation
+
 Using Fleet's `context` module, we've written a script to automatically download and upsert your library's embeddings to Pinecone. Simply run:
 
 ```shell
-python scripts.py
+make --library_name <your library name>
 ```
 
 Check your Pinecone index to make sure everything was properly upserted.
 
-If your library is not supported by Fleet Context out of the box, you can embed your documentation yourself using [our guide](https://fleet.so/blog) and continue through this tutorial once you've completed that.
+You can view all supported libraries and their associated library names [here](https://fleet.so/context). If your library is not supported by Fleet Context out of the box, you can embed your documentation yourself using [our guide](https://fleet.so/blog) and continue through this tutorial once you've completed that.
+
+<br>
+
+#### Embedding source code
+
+Regardless of whether or not your library is supported by Fleet Context out of the box, you'll be able to embed your source code so that your bot can reference it. Simply run:
+
+```shell
+make --code <git clone link, i.e. https://github.com/pydantic/pydantic.git>
+```
+
+The script will clone the repository, scrape/chunk/embed the source code, then upsert it into your Pinecone index.
+
+<br>
+
+#### Embedding past issues
+
+Install the app to your repository. You should see that it starts an asynchronous job to embed all past issues. Wait for this to finish. Tada, you have your past issues embedded!
+
+Real-time issues embeddings are automatically supported. Every time a new issue is created, it automatically chunks and embeds it so that the bot always has real-time information about your library.
 
 <br>
 
 ### 5. Test!
 
-Install the app to your workspace. You should see that it starts an asynchronous job to embed all past issues. Wait for this to finish before you continue.
-
-Open an issue and ask a question. It should give you a response with the right context. Additionally, with each issue coming in, it'll automatically embed it to use in the future.
+Open an issue and ask a question. It should give you a response with the right context.
 
 Congratulations, you've set up your own issues responder bot!
