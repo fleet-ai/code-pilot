@@ -74,13 +74,23 @@ async def respond_to_opened_issue(
     original_issue=None,
 ):
     # Make a call to Pinecone to get the top 10 contexts
-    results = query_index(
+    docs_issues_results = query_index(
         query=query,
         k=10,
+        filter_dict={"type": {"$in": ["documentation", "issue"]}},
+        namespace=NAMESPACE,
+    )
+    code_results = query_index(
+        query=query,
+        k=5,
+        filter_dict={"type": "code"},
         namespace=NAMESPACE,
     )
 
     # Consolidate the contexts
+    results = (
+        docs_issues_results + code_results if code_results else docs_issues_results
+    )
     context_text = parse_results(results)
     messages = [
         {"role": "system", "content": PROMPT},
