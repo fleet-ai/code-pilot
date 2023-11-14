@@ -20,6 +20,7 @@ from constants import (
     EMBEDDINGS_MODEL,
     MAX_CONTEXT_LENGTH_EMBEDDINGS,
     NAMESPACE,
+    BOT_NAME,
 )
 
 router = APIRouter()
@@ -59,7 +60,7 @@ async def embed_issues(issues):
     for vec_batch in batch(vectors, 100):
         index.upsert(vectors=vec_batch, namespace=NAMESPACE)
 
-    print("Finished embedding all issues.")
+    print("Finished embedding issue(s).")
 
 
 async def respond_to_opened_issue(
@@ -103,7 +104,7 @@ async def respond_to_opened_issue(
     }
     body = {
         "body": response.choices[0].message.content
-        + "\n\n*This response was generated using [Fleet Context](https://fleet.so/context)'s library embeddings. It is not meant to be a precise solution, but rather a starting point for your own research.*"
+        + f"\n\n*🤖 **Beep boop!** This response was generated using [Fleet Context](https://fleet.so/context)'s library embeddings. It is not meant to be a precise solution, but rather a starting point for your own research.*\n\n*You can ask a follow-up by tagging me @{BOT_NAME}.*"
     }
     response = requests.post(url, headers=headers, data=json.dumps(body), timeout=120)
 
@@ -123,6 +124,7 @@ async def github_response(request: Request):
 
     # Entered auth
     if data["action"] == "created" and "account" in data["installation"]:
+        print("App installed")
         # Then, loop through all issues and embed
         for repo in data.get("repositories", []):
             repo_name = repo["full_name"]
@@ -138,6 +140,7 @@ async def github_response(request: Request):
 
     # Opened issue
     elif data["action"] == "opened":
+        print("Issue opened")
         # Respond to opened issue
         asyncio.create_task(
             respond_to_opened_issue(
@@ -152,15 +155,21 @@ async def github_response(request: Request):
 
     # Commented on issue
     elif data["action"] == "created" and "issue" in data and "comment" in data:
-        # Respond to the opened issue
-        asyncio.create_task(
-            respond_to_opened_issue(
-                query=data["comment"]["body"],
-                repo_name=data["repository"]["full_name"],
-                issue_number=data["issue"]["number"],
-                github_auth_token=github_auth_token,
-                original_issue=data["issue"]["body"],
+        if (
+            not data["comment"]["user"]["login"] == "issues-responder[bot]"
+            and "BOT" not in data["comment"]["user"]["node_id"]
+            and f"@{BOT_NAME}" in data["comment"]["body"]
+        ):
+            print("Commented on issue")
+            # Respond to the opened issue
+            asyncio.create_task(
+                respond_to_opened_issue(
+                    query=data["comment"]["body"],
+                    repo_name=data["repository"]["full_name"],
+                    issue_number=data["issue"]["number"],
+                    github_auth_token=github_auth_token,
+                    original_issue=data["issue"]["body"],
+                )
             )
-        )
 
     return Response("", status_code=200)

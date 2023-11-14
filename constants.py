@@ -33,3 +33,4 @@ MAX_CONTEXT_LENGTH = 8192
 EMBEDDINGS_MODEL = "text-embedding-ada-002"
 MAX_CONTEXT_LENGTH_EMBEDDINGS = 8191
 NAMESPACE = "pydantic-src-test"
+BOT_NAME = "issues-responder"
