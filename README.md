@@ -97,7 +97,7 @@ Now, you need to create a new Pinecone index. Follow Pinecone's instructions on 
 
 Go to `constants.py` and update the following constants:
 1. LIBRARY_NAME = what your library's name is. Go to https://fleet.so/context to see the list of supported libraries.
-    NOTE: If your library is not supported, you can still use the tool! You'll have to write and run your own OpenAI embeddings. We have a full guide on how we did ours [here](https://fleet.so/blog).
+    NOTE: If your library is not supported, you can still use the tool! You'll have to embed your own library's documentation. We have a full guide on how we did ours [here](https://fleet.so/blog).
 2. INDEX_NAME = the name of your index.
 3. INDEX_ENVIRONMENT = the environment
 4. NAMESPACE = the namespace you will be using within the index. Feel free to keep it blank.
