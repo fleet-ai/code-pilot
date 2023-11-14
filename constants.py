@@ -35,7 +35,7 @@ EMBEDDINGS_MODEL = "text-embedding-ada-002"
 MAX_CONTEXT_LENGTH_EMBEDDINGS = 8191
 
 # Pinecone constants
-INDEX_NAME = ""  # TODO add
+INDEX_NAME = "libraries"  # TODO add
 INDEX_ENVIRONMENT = ""  # TODO add
 NAMESPACE = ""  # TODO add
 
@@ -43,3 +43,28 @@ NAMESPACE = ""  # TODO add
 APP_ID = ""  # TODO add
 BOT_NAME = "issues-responder"  # TODO add
 PRIVATE_KEY_PATH = "<your key>.pem"  # TODO add
+
+PATH_TO_SRC_CODE = "src_code/"  # TODO add
+
+EXTENSION_TO_TREE_SITTER_LANGUAGE = {
+    ".c": "c",
+    ".cc": "cpp",
+    ".cpp": "cpp",
+    ".cs": "c-sharp",
+    ".cxx": "cpp",
+    ".go": "go",
+    ".hs": "haskell",
+    ".java": "java",
+    ".jl": "julia",
+    ".js": "javascript",
+    ".jsx": "javascript",
+    ".php": "php",
+    ".py": "python",
+    ".rb": "ruby",
+    ".rs": "rust",
+    ".scala": "scala",
+    ".sql": "sql",
+    ".swift": "swift",
+    ".ts": "typescript",
+    ".tsx": "typescript",
+}

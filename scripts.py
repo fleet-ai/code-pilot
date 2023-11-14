@@ -10,7 +10,9 @@ from constants import (
     INDEX_NAME,
     INDEX_ENVIRONMENT,
     NAMESPACE,
+    PATH_TO_SRC_CODE,
 )
+from code_indexer import CodeIndexer
 
 load_dotenv()
 PINECONE_API_KEY = os.getenv("PINECONE_API_KEY")
@@ -41,7 +43,7 @@ def read_and_upsert(library_name):
 
 
 def read_and_upsert_source_code():
-    pass
+    _ = CodeIndexer(src_dir=PATH_TO_SRC_CODE)
 
 
 def main():
