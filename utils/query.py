@@ -49,7 +49,7 @@ def query_index(query, k=10, filter_dict=None, namespace=""):
         return []
 
 
-def parse_results(results):
+def parse_results(repo_url, results):
     token_count = 0
     context_text = ""
     for context in results:
@@ -58,7 +58,7 @@ def parse_results(results):
             text = context["metadata"]["body"]
             title = context["metadata"]["title"]
         elif "file" in context["metadata"]:  # src code
-            url = context["metadata"]["file"]
+            url = repo_url + "/".join(context["metadata"]["file"].split("/")[1:])
             title = context["metadata"]["file"].split("/")[-1]
             text = context["metadata"]["text"]
         else:  # documentation

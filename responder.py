@@ -72,6 +72,7 @@ async def embed_issues(issues):
 async def respond_to_opened_issue(
     query,
     repo_name,
+    repo_url,
     issue_number,
     github_auth_token,
     original_issue=None,
@@ -94,7 +95,7 @@ async def respond_to_opened_issue(
     results = (
         docs_issues_results + code_results if code_results else docs_issues_results
     )
-    context_text = parse_results(results)
+    context_text = parse_results(repo_url, results)
     messages = [
         {"role": "system", "content": PROMPT},
         {"role": "user", "content": context_text},
@@ -162,6 +163,7 @@ async def github_response(request: Request):
             respond_to_opened_issue(
                 query=data["issue"]["body"],
                 repo_name=data["repository"]["full_name"],
+                repo_url=data["repository"]["html_url"],
                 issue_number=data["issue"]["number"],
                 github_auth_token=github_auth_token,
             )
@@ -182,6 +184,7 @@ async def github_response(request: Request):
                 respond_to_opened_issue(
                     query=data["comment"]["body"],
                     repo_name=data["repository"]["full_name"],
+                    repo_url=data["repository"]["html_url"],
                     issue_number=data["issue"]["number"],
                     github_auth_token=github_auth_token,
                     original_issue=data["issue"]["body"],
