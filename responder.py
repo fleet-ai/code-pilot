@@ -19,6 +19,8 @@ from constants import (
     PROMPT,
     EMBEDDINGS_MODEL,
     MAX_CONTEXT_LENGTH_EMBEDDINGS,
+    INDEX_NAME,
+    INDEX_ENVIRONMENT,
     NAMESPACE,
     BOT_NAME,
 )
@@ -27,8 +29,8 @@ router = APIRouter()
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 PINECONE_API_KEY = os.getenv("PINECONE_API_KEY")
-pinecone.init(api_key=PINECONE_API_KEY, environment="us-east-1-aws")
-index = pinecone.Index("libraries")
+pinecone.init(api_key=PINECONE_API_KEY, environment=INDEX_ENVIRONMENT)
+index = pinecone.Index(INDEX_NAME)
 
 
 async def embed_issues(issues):

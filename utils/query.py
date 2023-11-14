@@ -2,14 +2,14 @@ import os
 import numpy as np
 import pinecone
 
-from constants import MAX_CONTEXT_LENGTH, PROMPT
+from constants import MAX_CONTEXT_LENGTH, PROMPT, INDEX_NAME, INDEX_ENVIRONMENT
 from utils.utils import get_num_tokens
 
 from langchain.embeddings import OpenAIEmbeddings
 
 PINECONE_API_KEY = os.getenv("PINECONE_API_KEY")
-pinecone.init(api_key=PINECONE_API_KEY, environment="us-east-1-aws")
-index = pinecone.Index("libraries")
+pinecone.init(api_key=PINECONE_API_KEY, environment=INDEX_ENVIRONMENT)
+index = pinecone.Index(INDEX_NAME)
 
 embedding_model = OpenAIEmbeddings(
     model="text-embedding-ada-002", openai_api_key=os.getenv("OPENAI_API_KEY")

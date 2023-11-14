@@ -4,3 +4,4 @@ tiktoken
 langchain
 python-dotenv
 PyJWT
+fleet-context>=1.1.7

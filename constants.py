@@ -28,9 +28,19 @@ This person is a big fan of PDFs[1] and CSVs[2].
 2: https://example.com/docs/api.html#csvs
 """
 
+# OpenAI constants
 MODEL = "gpt-4"
 MAX_CONTEXT_LENGTH = 8192
 EMBEDDINGS_MODEL = "text-embedding-ada-002"
 MAX_CONTEXT_LENGTH_EMBEDDINGS = 8191
+
+# Pinecone constants
+LIBRARY_NAME = "pydantic"
+INDEX_NAME = "libraries"
+INDEX_ENVIRONMENT = "us-east-1-aws"
 NAMESPACE = "pydantic-src-test"
+
+# Auth constants
+APP_ID = "463266"
 BOT_NAME = "issues-responder"
+PRIVATE_KEY_PATH = "issues-responder.2023-11-13.private-key.pem"

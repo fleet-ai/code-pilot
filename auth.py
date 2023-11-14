@@ -3,18 +3,17 @@ import time
 import requests
 from pathlib import Path
 
-PRIVATE_KEY_PATH = "issues-responder.2023-11-13.private-key.pem"
+from constants import APP_ID, PRIVATE_KEY_PATH
 
 
 def get_token(installation_id):
     private_key = Path(PRIVATE_KEY_PATH).read_text(encoding="utf8")
-    app_id = "463266"
 
     # Generate the JWT
     payload = {
         "iat": int(time.time()),
         "exp": int(time.time()) + (10 * 60),
-        "iss": app_id,
+        "iss": APP_ID,
     }
     jwt_token = pyjwt.encode(payload, private_key, algorithm="RS256")
 
