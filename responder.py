@@ -145,15 +145,26 @@ async def github_response(request: Request):
         # Then, loop through all issues and embed
         for repo in data.get("repositories", []):
             repo_name = repo["full_name"]
-            url = f"https://api.github.com/repos/{repo_name}/issues"
+            issues = []
+
+            page = 1
+            url = f"https://api.github.com/repos/{repo_name}/issues?state=all&per_page=100&page={page}"
             headers = {
                 "Accept": "application/vnd.github+json",
                 "Authorization": f"Bearer {github_auth_token}",
                 "X-GitHub-Api-Version": "2022-11-28",
             }
 
-            response = requests.get(url, headers=headers, timeout=120)
-            asyncio.create_task(embed_issues(response.json()))
+            response = requests.get(url, headers=headers, timeout=120).json()
+            issues.extend(response)
+            # Loop through all responses, paginated
+            while len(response) == 100:
+                page += 1
+                url = f"https://api.github.com/repos/{repo_name}/issues?state=all&per_page=100&page={page}"
+                response = requests.get(url, headers=headers, timeout=120).json()
+                issues.extend(response)
+
+            asyncio.create_task(embed_issues(issues))
 
     # Opened issue
     elif data["action"] == "opened":

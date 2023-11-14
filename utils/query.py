@@ -53,15 +53,15 @@ def parse_results(repo_url, results):
     token_count = 0
     context_text = ""
     for context in results:
-        if "issue_id" in context["metadata"]:  # issue
+        if context["metadata"]["type"] == "issue":
             url = context["metadata"]["url"]
             text = context["metadata"]["body"]
             title = context["metadata"]["title"]
-        elif "file" in context["metadata"]:  # src code
-            url = repo_url + "/".join(context["metadata"]["file"].split("/")[1:])
+        if context["metadata"]["type"] == "code":
+            url = f"{repo_url}/blob/main/{'/'.join(context['metadata']['file'].split('/')[1:])}"
             title = context["metadata"]["file"].split("/")[-1]
             text = context["metadata"]["text"]
-        else:  # documentation
+        elif context["metadata"]["type"] == "documentation":
             url = context["metadata"]["url"]
             text = context["metadata"]["text"]
             title = context["metadata"]["title"]

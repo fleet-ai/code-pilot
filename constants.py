@@ -35,14 +35,14 @@ EMBEDDINGS_MODEL = "text-embedding-ada-002"
 MAX_CONTEXT_LENGTH_EMBEDDINGS = 8191
 
 # Pinecone constants
-INDEX_NAME = "libraries"  # TODO add
-INDEX_ENVIRONMENT = "us-east-1-aws"  # TODO add
-NAMESPACE = "pydantic-src-test"  # TODO add
+INDEX_NAME = ""  # TODO add
+INDEX_ENVIRONMENT = ""  # TODO add
+NAMESPACE = ""  # TODO add
 
 # Auth constants
 APP_ID = ""  # TODO add
-BOT_NAME = "issues-responder"  # TODO add
-PRIVATE_KEY_PATH = "<your key>.pem"  # TODO add
+BOT_NAME = "fleet-code-pilot"  # TODO add
+PRIVATE_KEY_PATH = "<your key name>.pem"  # TODO add
 
 PATH_TO_SRC_CODE = "src_code/"  # OPTIONAL modify -- must start with src_code/
 
