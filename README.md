@@ -1,2 +1,2 @@
 # issues-responder
-A Github bot that automatically responds to 
+A Github bot that automatically responds to issues.
