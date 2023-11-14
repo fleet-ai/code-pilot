@@ -130,7 +130,7 @@ Go to `constants.py` and update the following constants:
 Using Fleet's `context` module, we've written a script to automatically download and upsert your library's embeddings to Pinecone. Simply run:
 
 ```shell
-make --library_name <your library name>
+make docs library_name=<your library name>
 ```
 
 Check your Pinecone index to make sure everything was properly upserted.
@@ -144,7 +144,7 @@ You can view all supported libraries and their associated library names [here](h
 Regardless of whether or not your library is supported by Fleet Context out of the box, you'll be able to embed your source code so that your bot can reference it. Simply run:
 
 ```shell
-make --code <git clone link, i.e. https://github.com/pydantic/pydantic.git>
+make code url=<git clone link, i.e. https://github.com/pydantic/pydantic.git>
 ```
 
 The script will clone the repository, scrape/chunk/embed the source code, then upsert it into your Pinecone index.
