@@ -51,6 +51,7 @@ def main():
     parser.add_argument(
         "--code",
         action="store_true",
+        default=False,
         help="Boolean on whether or not to scrape and upsert source code",
     )
     parser.add_argument(
@@ -61,10 +62,10 @@ def main():
     )
     args = parser.parse_args()
 
-    if args.source_code:
+    if args.code:
         read_and_upsert_source_code()
-    elif args.lib_name:
-        read_and_upsert(args.lib_name)
+    elif args.library_name:
+        read_and_upsert(args.library_name)
     else:
         print("Please provide either --code or --lib_name argument.")
 

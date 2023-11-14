@@ -36,8 +36,8 @@ MAX_CONTEXT_LENGTH_EMBEDDINGS = 8191
 
 # Pinecone constants
 INDEX_NAME = "libraries"  # TODO add
-INDEX_ENVIRONMENT = ""  # TODO add
-NAMESPACE = ""  # TODO add
+INDEX_ENVIRONMENT = "us-east-1-aws"  # TODO add
+NAMESPACE = "pydantic-src-test"  # TODO add
 
 # Auth constants
 APP_ID = ""  # TODO add

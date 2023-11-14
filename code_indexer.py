@@ -1,4 +1,5 @@
 import os
+from dotenv import load_dotenv
 from pathlib import Path
 import pinecone
 import uuid
@@ -10,17 +11,13 @@ from constants import (
     EMBEDDINGS_MODEL,
     MAX_CONTEXT_LENGTH_EMBEDDINGS,
     INDEX_NAME,
+    INDEX_ENVIRONMENT,
     NAMESPACE,
 )
 from code_splitter import CodeSplitter
 
-api_key = os.environ.get("PINECONE_API_KEY")
-environment = os.environ.get("PINECONE_ENVIRONMENT")
-
-if not api_key or not environment:
-    raise ValueError(
-        "PINECONE_API_KEY and PINECONE_ENVIRONMENT must be set in environment variables"
-    )
+load_dotenv()
+PINECONE_API_KEY = os.getenv("PINECONE_API_KEY")
 
 
 class CodeIndexer:
@@ -121,11 +118,8 @@ class CodeIndexer:
 
         return self.code_splitters[ext]
 
-    def _insert_nodes(self, nodes):
-        self.index.insert_nodes(nodes)
-
     def _create_index(self):
-        pinecone.init(api_key=api_key, environment=environment)
+        pinecone.init(api_key=PINECONE_API_KEY, environment=INDEX_ENVIRONMENT)
         pinecone_index = pinecone.Index(INDEX_NAME)
         self.index = pinecone_index
 

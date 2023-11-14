@@ -1,10 +1,10 @@
 .PHONY: docs code
 
 docs:
-	@echo "Running read_and_upsert with library name: $(lib_name)"
-	@python scripts.py --libray_name=$(lib_name)
+	@echo "Running read_and_upsert with library name: $(library_name)"
+	@python scripts.py --library_name=$(library_name)
 
 code:
-	@echo "Cloning repository from GitHub link: $(gh_link)"
-	@git clone $(gh_link)
+	@echo "Cloning repository from GitHub link: $(url)"
+	@git clone $(url)
 	@python scripts.py --code
