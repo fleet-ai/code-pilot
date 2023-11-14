@@ -1,59 +1,166 @@
 # pylint: disable=unused-argument
 import os
+import json
+import uuid
+import asyncio
 import requests
 
+import pinecone
 from openai import OpenAI
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Request, Response
 
-from utils import query_index, get_num_tokens
-from constants import MAX_CONTEXT_LENGTHS, PROMPT
+from auth import get_token
+from utils.utils import batch
+from utils.chunk import chunk_nltk
+from utils.embed import embed_chunks
+from utils.query import query_index, parse_results
+from constants import (
+    MODEL,
+    PROMPT,
+    EMBEDDINGS_MODEL,
+    MAX_CONTEXT_LENGTH_EMBEDDINGS,
+    NAMESPACE,
+)
 
-client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
 router = APIRouter()
-GITHUB_AUTH_TOKEN = os.environ["GITHUB_AUTH_TOKEN"]
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+PINECONE_API_KEY = os.getenv("PINECONE_API_KEY")
+pinecone.init(api_key=PINECONE_API_KEY, environment="us-east-1-aws")
+index = pinecone.Index("libraries")
 
 
-@router.post("/generate_issue_response", response_model=str)
-async def generate_issue_response(request: Request, query: str, model="gpt-4"):
-    data = await request.json
-    if data["action"] == "opened":
-        issue_comment_url = data["issue"]["comments_url"]
-        headers = {"Authorization": f"token {GITHUB_AUTH_TOKEN}"}
-        comment = {"body": "Thank you for opening an issue. We will look into it ASAP!"}
-        requests.post(issue_comment_url, json=comment, headers=headers, timeout=120)
+async def embed_issues(issues):
+    vectors = []
+    for issue in issues:
+        chunks = chunk_nltk(issue["body"])
+        embeddings = embed_chunks(
+            chunks,
+            model=EMBEDDINGS_MODEL,
+            token_limit=MAX_CONTEXT_LENGTH_EMBEDDINGS,
+        )
+        for chunk, embedding in zip(chunks, embeddings):
+            metadata = {
+                "issue_id": issue["id"],
+                "url": issue["html_url"],
+                "title": issue["title"],
+                "body": chunk,
+                "state": issue["state"],
+                "labels": issue["labels"],
+            }
+            vectors.append(
+                {
+                    "id": str(uuid.uuid4()),
+                    "values": embedding,
+                    "metadata": metadata,
+                }
+            )
 
-    # Make a call to Pinecone to get the top 20 contexts
+    for vec_batch in batch(vectors, 100):
+        index.upsert(vectors=vec_batch, namespace=NAMESPACE)
+
+    print("Finished embedding all issues.")
+
+
+async def respond_to_opened_issue(
+    query,
+    repo_name,
+    issue_number,
+    github_auth_token,
+    original_issue=None,
+):
+    # Make a call to Pinecone to get the top 10 contexts
     results = query_index(
         query=query,
-        k=20,
-        filter_dict={},
-        alpha=0.9,
-        namespace="prod-text-embedding-ada-002",  # TODO change
+        k=10,
+        namespace=NAMESPACE,
     )
 
-    token_count = 0
-    token_limit = MAX_CONTEXT_LENGTHS[model]
-    for context in results:
-        text = context["metadata"]["text"]
+    # Consolidate the contexts
+    context_text = parse_results(results)
+    messages = [
+        {"role": "system", "content": PROMPT},
+        {"role": "user", "content": context_text},
+        {"role": "user", "content": query},
+    ]
 
-        # if the length of the context is above the token limit, skip it
-        if (
-            token_count
-            + get_num_tokens(
-                "<|im_start|>system" + PROMPT + "<|im_end|>\n" + text + "\n"
-            )
-        ) > token_limit:
-            print("Context too long, skipping...")
-            continue
-        else:
-            context_text += text + "\n"
+    # Add original issue if needs adding
+    if original_issue:
+        messages.insert(1, {"role": "user", "content": original_issue})
 
+    # Create the OpenAI response
     response = client.chat.completions.create(
-        messages=[
-            {"role": "system", "text": PROMPT},
-            {"role": "user", "text": context_text},
-            {"role": "user", "text": query},
-        ]
+        model=MODEL,
+        messages=messages,
     )
 
-    return response.choices[0].message.content, 200
+    # Post a comment
+    url = f"https://api.github.com/repos/{repo_name}/issues/{issue_number}/comments"
+    headers = {
+        "Accept": "application/vnd.github+json",
+        "Authorization": f"Bearer {github_auth_token}",
+        "X-GitHub-Api-Version": "2022-11-28",
+    }
+    body = {
+        "body": response.choices[0].message.content
+        + "\n\n*This response was generated using [Fleet Context](https://fleet.so/context)'s library embeddings. It is not meant to be a precise solution, but rather a starting point for your own research.*"
+    }
+    response = requests.post(url, headers=headers, data=json.dumps(body), timeout=120)
+
+    # Check the response
+    if response.status_code == 201:
+        print("Comment posted successfully.")
+    else:
+        print(f"Failed to post comment. Status code: {response.status_code}")
+
+
+@router.post("/", response_model=str)
+async def github_response(request: Request):
+    data = await request.json()
+
+    # Validate JWT and create an auth token
+    github_auth_token = get_token(data["installation"]["id"])
+
+    # Entered auth
+    if data["action"] == "created" and "account" in data["installation"]:
+        # Then, loop through all issues and embed
+        for repo in data.get("repositories", []):
+            repo_name = repo["full_name"]
+            url = f"https://api.github.com/repos/{repo_name}/issues"
+            headers = {
+                "Accept": "application/vnd.github+json",
+                "Authorization": f"Bearer {github_auth_token}",
+                "X-GitHub-Api-Version": "2022-11-28",
+            }
+
+            response = requests.get(url, headers=headers, timeout=120)
+            asyncio.create_task(embed_issues(response.json()))
+
+    # Opened issue
+    elif data["action"] == "opened":
+        # Respond to opened issue
+        asyncio.create_task(
+            respond_to_opened_issue(
+                query=data["issue"]["body"],
+                repo_name=data["repository"]["full_name"],
+                issue_number=data["issue"]["number"],
+                github_auth_token=github_auth_token,
+            )
+        )
+        # Embed the issue
+        asyncio.create_task(embed_issues([data["issue"]]))
+
+    # Commented on issue
+    elif data["action"] == "created" and "issue" in data and "comment" in data:
+        # Respond to the opened issue
+        asyncio.create_task(
+            respond_to_opened_issue(
+                query=data["comment"]["body"],
+                repo_name=data["repository"]["full_name"],
+                issue_number=data["issue"]["number"],
+                github_auth_token=github_auth_token,
+                original_issue=data["issue"]["body"],
+            )
+        )
+
+    return Response("", status_code=200)

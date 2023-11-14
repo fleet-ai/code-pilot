@@ -1,14 +1,17 @@
 # fmt: off
 import logging
+from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from responder import router
 # fmt: on
 
 logger = logging.getLogger("data_api_logger")
 logger.setLevel(logging.INFO)
 
+load_dotenv()
 app = FastAPI()
+
+from responder import router
 
 origins = [
     "http://localhost:3000",  # Allow localhost for development

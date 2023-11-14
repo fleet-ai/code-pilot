@@ -28,9 +28,8 @@ This person is a big fan of PDFs[1] and CSVs[2].
 2: https://example.com/docs/api.html#csvs
 """
 
-MAX_CONTEXT_LENGTHS = {
-    "gpt-4-1106-preview": 128000,
-    "gpt-4": 8192,
-    "gpt-3.5-turbo": 4096,
-    "gpt-3.5-turbo-16k": 16384,
-}
+MODEL = "gpt-4"
+MAX_CONTEXT_LENGTH = 8192
+EMBEDDINGS_MODEL = "text-embedding-ada-002"
+MAX_CONTEXT_LENGTH_EMBEDDINGS = 8191
+NAMESPACE = "pydantic-src-test"
