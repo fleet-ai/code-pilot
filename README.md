@@ -26,9 +26,9 @@ You'll need several things before we get set up.
 2. An OpenAI account. Make one [here](https://platform.openai.com).
 3. Embeddings. We already have support for embeddings covering the top 1221 libraries.
 
-     You can check if your library is supported [here](https://fleet.so/context).
-     If it's supported, you'll be able to get this set up pretty quickly.
-     If it's not, you'll have to embed your documentation yourself. Luckly, [we have a full guide for you to follow](https://fleet.so/blog).
+   You can check if your library is supported [here](https://fleet.so/context).
+   If it's supported, you'll be able to get this set up pretty quickly.
+   If it's not, you'll have to embed your documentation yourself. Luckly, [we have a full guide for you to follow](https://fleet.so/blog).
 
 <br>
 
@@ -92,6 +92,7 @@ Drag and drop your .pem file into the root directory of the cloned `issues-respo
 #### OpenAI
 
 Create a new file in the root directory called `.env` and add the line:
+
 ```
 OPENAI_API_KEY=<your openai api key>
 ```
@@ -101,14 +102,13 @@ OPENAI_API_KEY=<your openai api key>
 Now, you need to create a new Pinecone index. Follow Pinecone's instructions on how to do that. The pod that you use doesn't matter too much and depends on if you want to optimize for storage or performance. We recommend dotproduct as your metric, as we will be implementing a hybrid retrievals system.
 
 Go to `constants.py` and update the following constants:
-1. LIBRARY_NAME = what your library's name is. Go to https://fleet.so/context to see the list of supported libraries.
 
-    NOTE: If your library is not supported, you can still use the tool! You'll have to embed your own library's documentation. We have a full guide on how we did ours [here](https://fleet.so/blog).
-2. INDEX_NAME = the name of your index.
-3. INDEX_ENVIRONMENT = the environment for your index (ie "us-east-1-aws")
-4. NAMESPACE = the namespace you will be using within the index. Feel free to keep it blank.
+1. INDEX_NAME = the name of your index.
+2. INDEX_ENVIRONMENT = the environment for your index (ie "us-east-1-aws")
+3. NAMESPACE = the namespace you will be using within the index. Feel free to keep it blank.
 
 In your .env file, add the line:
+
 ```
 PINECONE_API_KEY=<your pinecone api key>
 ```
@@ -116,7 +116,8 @@ PINECONE_API_KEY=<your pinecone api key>
 #### Github
 
 Go to `constants.py` and update the following constants:
-1. APP_ID = your Github app's ID. You can find it under "General" on your app 
+
+1. APP_ID = your Github app's ID. You can find it under "General" on your app
 2. BOT_NAME = whatever you want to name your bot
 3. PRIVATE_KEY_PATH = the name of the .pem file you just downloaded
 
@@ -143,5 +144,3 @@ Install the app to your workspace. You should see that it starts an asynchronous
 Open an issue and ask a question. It should give you a response with the right context. Additionally, with each issue coming in, it'll automatically embed it to use in the future.
 
 Congratulations, you've set up your own issues responder bot!
-
-

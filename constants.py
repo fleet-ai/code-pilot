@@ -35,7 +35,6 @@ EMBEDDINGS_MODEL = "text-embedding-ada-002"
 MAX_CONTEXT_LENGTH_EMBEDDINGS = 8191
 
 # Pinecone constants
-LIBRARY_NAME = ""  # TODO add
 INDEX_NAME = ""  # TODO add
 INDEX_ENVIRONMENT = ""  # TODO add
 NAMESPACE = ""  # TODO add

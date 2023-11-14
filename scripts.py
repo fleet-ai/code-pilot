@@ -7,7 +7,6 @@ from context import download_embeddings
 
 from utils.utils import batch
 from constants import (
-    LIBRARY_NAME,
     INDEX_NAME,
     INDEX_ENVIRONMENT,
     NAMESPACE,
@@ -48,13 +47,24 @@ def read_and_upsert_source_code():
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--code", action="store_true", help="Scrape and upsert source code"
+        "--code",
+        action="store_true",
+        help="Boolean on whether or not to scrape and upsert source code",
+    )
+    parser.add_argument(
+        "--library_name",
+        type=str,
+        default=None,
+        help="Library name from Fleet Context to read and upsert",
     )
     args = parser.parse_args()
 
     if args.source_code:
         read_and_upsert_source_code()
-    read_and_upsert(LIBRARY_NAME)
+    elif args.lib_name:
+        read_and_upsert(args.lib_name)
+    else:
+        print("Please provide either --code or --lib_name argument.")
 
 
 if __name__ == "__main__":
