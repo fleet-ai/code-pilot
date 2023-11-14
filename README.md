@@ -5,7 +5,7 @@
     <a href="https://discord.gg/YTc98S77aZ"><img src="https://img.shields.io/discord/1107887761412870154?logo=discord&style=flat&logoColor=white" alt="Discord"/></a>
     <br>
     <br>
-    <b>A Github bot that automatically responds to issues using real-time data from your library's documentation & past issues.</b>
+    <b>A Github bot that automatically responds to issues using real-time data from your library's documentation, source code, & past issues.</b>
     <br>
     <span>View the demo over Pydantic's documentation: https://github.com/fleet-ai/issues-responder/issues/5</span>
     <br>
@@ -120,6 +120,12 @@ Go to `constants.py` and update the following constants:
 1. APP_ID = your Github app's ID. You can find it under "General" on your app
 2. BOT_NAME = whatever you want to name your bot
 3. PRIVATE_KEY_PATH = the name of the .pem file you just downloaded
+
+<br>
+
+#### Source code
+
+1. PATH_TO_SRC_CODE = the path to the root directory of the source code you want scraped. Must start with `src_code/` as that's where source code will be cloned into. If you don't change this, it will by default scrape your entire repository (which you may not always want).
 
 <br>
 
