@@ -5,7 +5,7 @@
     <a href="https://discord.gg/YTc98S77aZ"><img src="https://img.shields.io/discord/1107887761412870154?logo=discord&style=flat&logoColor=white" alt="Discord"/></a>
     <br>
     <br>
-    <b>A Github bot that automatically responds to issues.</b>
+    <b>A Github bot that automatically responds to issues using real-time data from your library's documentation & past issues.</b>
     <br>
     <span>View the demo over Pydantic's documentation: https://github.com/fleet-ai/issues-responder/issues/5</span>
     <br>
@@ -54,19 +54,19 @@ This will set up web forwarding — any requests that go through ngrok will forw
 
 First, you'll need to create a new Github bot. Click on your profile on the top right corner of Github, then click `Settings` -> `Developer Settings` (should be the bottom option on the left sidebar). You should be greeted with this screen:
 
-<img width="1632" alt="Screenshot 2023-11-14 at 12 41 19 PM" src="https://github.com/fleet-ai/issues-responder/assets/44193474/03df90c8-48cd-4398-8e2c-861840597fb2">
+<img width="600" alt="Screenshot 2023-11-14 at 12 41 19 PM" src="https://github.com/fleet-ai/issues-responder/assets/44193474/03df90c8-48cd-4398-8e2c-861840597fb2">
 
 Fill out the form with the right details, or leave it as the default value. Insert your ngrok URL you got from the previous section into the `Webhook URL`:
 
-<img width="779" alt="Screenshot 2023-11-14 at 12 48 15 PM" src="https://github.com/fleet-ai/issues-responder/assets/44193474/4834d77d-f166-4c2f-9f3c-2507a5212ce3">
+<img width="400" alt="Screenshot 2023-11-14 at 12 48 15 PM" src="https://github.com/fleet-ai/issues-responder/assets/44193474/4834d77d-f166-4c2f-9f3c-2507a5212ce3">
 
 Under "Permissions", make sure you allow "Read and write" for issues. This is the only one you'll need.
 
-<img width="752" alt="Screenshot 2023-11-14 at 12 49 20 PM" src="https://github.com/fleet-ai/issues-responder/assets/44193474/1d8dd788-7e27-4caf-b27d-63c14046f939">
+<img width="400" alt="Screenshot 2023-11-14 at 12 49 20 PM" src="https://github.com/fleet-ai/issues-responder/assets/44193474/1d8dd788-7e27-4caf-b27d-63c14046f939">
 
 You'll also want to subscribe to the `Issues` and `Issue comment` events so that your API is properly notified.
 
-<img width="772" alt="Screenshot 2023-11-14 at 12 50 07 PM" src="https://github.com/fleet-ai/issues-responder/assets/44193474/caf5d808-ba1c-4e02-9001-f1d9444af46d">
+<img width="400" alt="Screenshot 2023-11-14 at 12 50 07 PM" src="https://github.com/fleet-ai/issues-responder/assets/44193474/caf5d808-ba1c-4e02-9001-f1d9444af46d">
 
 Once you fill these out, click Create!
 
@@ -76,7 +76,7 @@ Once you fill these out, click Create!
 
 Once you're done creating your bot, you should get a notification prompting you to create a Github private key. Go ahead and click that, then click "Generate Private Key". It should download a .pem file for you automatically.
 
-<img width="795" alt="Screenshot 2023-11-14 at 12 52 03 PM" src="https://github.com/fleet-ai/issues-responder/assets/44193474/8a37fbf4-c5ae-454c-ba41-c898a0da77c6">
+<img width="400" alt="Screenshot 2023-11-14 at 12 52 03 PM" src="https://github.com/fleet-ai/issues-responder/assets/44193474/8a37fbf4-c5ae-454c-ba41-c898a0da77c6">
 
 Drag and drop your .pem file into the root directory of the cloned `issues-responder` repository. We will be JWT and this .pem file to get a Github access token.
 
@@ -118,9 +118,21 @@ Go to `constants.py` and update the following constants:
 
 ### 4. Run and upsert your embeddings
 
-WIP
+Using Fleet's `context` module, we've written a script to automatically download and upsert your library's embeddings to Pinecone. Simply run:
+
+```shell
+python scripts.py
+```
+
+Check your Pinecone to make sure everything was properly upserted.
 
 <br>
 
-### 5. 
+### 5. Test!
+
+Install the app to your workspace. You should see that it starts an asynchronous job to embed all past issues.
+
+Open an issue and ask a question. It should give you a nice response with the right context. Additionally, with each issue coming in, it'll automatically embed it to use in the future.
+
+Congratulations! You've set up your own issues responder bot.
 
