@@ -89,7 +89,6 @@ class CodeIndexer:
         # Convert path to an absolute path
         path = os.path.abspath(path)
 
-        print("path:", path)
         found_files = []
 
         for root, _, files in os.walk(path):

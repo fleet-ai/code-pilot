@@ -44,7 +44,7 @@ APP_ID = ""  # TODO add
 BOT_NAME = "issues-responder"  # TODO add
 PRIVATE_KEY_PATH = "<your key>.pem"  # TODO add
 
-PATH_TO_SRC_CODE = "src_code/"  # TODO add
+PATH_TO_SRC_CODE = "src_code/"  # OPTIONAL modify -- must start with src_code/
 
 EXTENSION_TO_TREE_SITTER_LANGUAGE = {
     ".c": "c",

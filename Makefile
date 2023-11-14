@@ -6,5 +6,5 @@ docs:
 
 code:
 	@echo "Cloning repository from GitHub link: $(url)"
-	@git clone $(url)
+	@mkdir -p src_code && cd src_code && git clone $(url)
 	@python scripts.py --code
