@@ -39,8 +39,8 @@ We will be using ngrok to set up your FastAPI endpoints, but feel free to use an
 First, clone this repository and install all requirements:
 
 ```shell
-git clone https://github.com/fleet-ai/issues-responder.git
-cd issues-responder
+git clone https://github.com/fleet-ai/code-pilot.git
+cd code-pilot
 pip install -r requirements.txt
 python main.py
 ```
@@ -83,7 +83,7 @@ Once you're done creating your bot, you should get a notification prompting you 
 
 <img width="400" alt="Screenshot 2023-11-14 at 12 52 03 PM" src="https://github.com/fleet-ai/issues-responder/assets/44193474/8a37fbf4-c5ae-454c-ba41-c898a0da77c6">
 
-Drag and drop your .pem file into the root directory of the cloned `issues-responder` repository. We will be JWT and this .pem file to get a Github access token.
+Drag and drop your .pem file into the root directory of the cloned `code-pilot` repository. We will be JWT and this .pem file to get a Github access token.
 
 <br>
 
@@ -103,9 +103,9 @@ Now, you need to create a new Pinecone index. Follow Pinecone's instructions on 
 
 Go to `constants.py` and update the following constants:
 
-1. INDEX_NAME = the name of your index.
-2. INDEX_ENVIRONMENT = the environment for your index (ie "us-east-1-aws")
-3. NAMESPACE = the namespace you will be using within the index. Feel free to keep it blank.
+1. `INDEX_NAME`: the name of your index.
+2. `INDEX_ENVIRONMENT`: the environment for your index (ie "us-east-1-aws")
+3. `NAMESPACE`: the namespace you will be using within the index. Feel free to keep it blank.
 
 In your .env file, add the line:
 
@@ -117,15 +117,15 @@ PINECONE_API_KEY=<your pinecone api key>
 
 Go to `constants.py` and update the following constants:
 
-1. APP_ID = your Github app's ID. You can find it under "General" on your app
-2. BOT_NAME = whatever you want to name your bot
-3. PRIVATE_KEY_PATH = the name of the .pem file you just downloaded
+1. `APP_ID`: your Github app's ID. You can find it under the "General" tab within your app settings
+2. `BOT_NAME`: whatever you want to name your bot
+3. `PRIVATE_KEY_PATH`: the name of the .pem file you just added to your root directory
 
 <br>
 
 #### Source code
 
-1. PATH_TO_SRC_CODE = the path to the root directory of the source code you want scraped. Must start with `src_code/` as that's where source code will be cloned into. If you don't change this, it will by default scrape your entire repository (which you may not always want).
+1. `PATH_TO_SRC_CODE`: the path to the root directory of the source code you want scraped. Must start with `src_code/` as that's where source code will be cloned into. If you don't change this, it will by default scrape your entire repository (which you may not always want).
 
 <br>
 
