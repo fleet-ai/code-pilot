@@ -65,7 +65,7 @@ class CodeIndexer:
             }
             for chunk in chunks
         ]
-        self.embed_code_chunks(chunks)
+        self.embed_and_upsert_code_chunks(chunks)
 
     def refresh_nodes(self):
         files = self._find_files(self.src_dir, EXTENSION_TO_TREE_SITTER_LANGUAGE)
@@ -126,28 +126,28 @@ class CodeIndexer:
 
         return pinecone_index
 
-    def embed_code_chunks(self, chunks):
+    def embed_and_upsert_code_chunks(self, chunks):
         vectors = []
-        for chunk in chunks:
-            embeddings = embed_code_chunks(
-                chunks,
-                model=EMBEDDINGS_MODEL,
-                token_limit=MAX_CONTEXT_LENGTH_EMBEDDINGS,
-            )
-            for chunk, embedding in zip(chunks, embeddings):
-                metadata = {
-                    "id": chunk["id"],
-                    "text": chunk["text"],
-                    "file": chunk["file"],
-                    "type": "code",
+        embeddings = embed_code_chunks(
+            chunks,
+            model=EMBEDDINGS_MODEL,
+            token_limit=MAX_CONTEXT_LENGTH_EMBEDDINGS,
+        )
+
+        for chunk, embedding in zip(chunks, embeddings):
+            metadata = {
+                "id": chunk["id"],
+                "text": chunk["text"],
+                "file": chunk["file"],
+                "type": "code",
+            }
+            vectors.append(
+                {
+                    "id": str(uuid.uuid4()),
+                    "values": embedding,
+                    "metadata": metadata,
                 }
-                vectors.append(
-                    {
-                        "id": str(uuid.uuid4()),
-                        "values": embedding,
-                        "metadata": metadata,
-                    }
-                )
+            )
 
         for vec_batch in batch(vectors, 100):
             self.index.upsert(vectors=vec_batch, namespace=NAMESPACE)
